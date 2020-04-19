@@ -38,11 +38,21 @@ class Subject
         void set_dy(double dy);
         bool infected();
         void infect();
+        int daysInfected();
+        void addDayInfected();
+        void heal();
+        void setImmune(bool b);
+        int daysImmune();
+        void addDayImmune();
+        bool immune();
         double angle();
         double speed();
     private:
         double _x = 0,_y = 0, _dx = 0, _dy = 0;
         bool _infected = false;
+        int _daysInfected = 0;
+        bool _immune = false;
+        int _daysImmune = 0;
         int _radius = 0;
 };
 

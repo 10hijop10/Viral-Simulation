@@ -82,6 +82,36 @@ void Subject::infect()
 {
     this->_infected = true;
 }
+void Subject::heal(){
+    this->_infected = false;
+    this->_daysInfected = 0;
+    this->setImmune(true);
+}
+
+bool Subject::immune() {
+    return this->_immune;
+}
+
+void Subject::setImmune(bool b){
+    this->_immune = b;
+    this->_daysImmune = 0;
+}
+
+int Subject::daysInfected() {
+    return this->_daysInfected;
+}
+
+void Subject::addDayInfected() {
+    this->_daysInfected++;
+}
+
+int Subject::daysImmune() {
+    return this->_daysImmune;
+}
+
+void Subject::addDayImmune() {
+    this->_daysImmune++;
+}
 
 double Subject::angle()
 {
@@ -92,5 +122,6 @@ double Subject::speed()
 {
     return sqrt(_dx * _dx + _dy * _dy);
 }
+
 
 }

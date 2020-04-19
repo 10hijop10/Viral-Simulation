@@ -56,11 +56,20 @@ void Simulation::tick()
 
     std::vector<Subject*> collision_checker;
 
+      int numberInfected = 0;
+
     for(Subject& s : _subjects)
     {
         collision_checker.emplace_back(&s);
-
         wall_collision(s);
+
+        s.set_x(s.x() + s.dx() * dt);
+        s.set_y(s.y() + s.dy() * dt);
+
+        if(s.infected())
+        {
+            numberInfected++;
+        }
     }
 
     for(int i = collision_checker.size()-1; i < collision_checker.size(); i--)
@@ -74,35 +83,45 @@ void Simulation::tick()
         }
     }
 
-    int numberInfected = 0;
-
-    for(Subject& s : _subjects)
-    {
-        s.set_x(s.x() + s.dx() * dt);
-        s.set_y(s.y() + s.dy() * dt);
-
-        if(s.infected())
-        {
-            numberInfected++;
-        }
-    }
-
     if(counter % 30 == 0)
     {
-        _sh.get()->communicate_number_infected(counter/30,numberInfected);
+	    _sh->communicate_number_infected(counter/30,numberInfected);
+
+        for(Subject& s : _subjects)
+        {
+            if(s.infected())
+            {
+                if (s.daysInfected() < 20){
+                    s.addDayInfected();
+                }
+                else
+                {
+                    s.heal();
+                }
+            }
+            if (s.immune()) {
+                if (s.daysImmune() < 10){
+                    s.addDayImmune();
+                }
+                else
+                {
+                    s.setImmune(false);
+                }
+            }
+        }
+        
     }
-    
 
     draw_to_canvas();
 }
 
 void Simulation::draw_to_canvas()
 {
-    _canvas.get()->clear();
-    _canvas.get()->draw_rectangle(0,0,1,_sim_height,BLACK);
-    _canvas.get()->draw_rectangle(0,0,_sim_width,1,BLACK);
-    _canvas.get()->draw_rectangle(0,_sim_height-1,_sim_width,1,BLACK);
-    _canvas.get()->draw_rectangle(_sim_width-1,0,1,_sim_height,BLACK);
+	_canvas->clear();
+	_canvas->draw_rectangle(0,0,1,_sim_height,BLACK);
+	_canvas->draw_rectangle(0,0,_sim_width,1,BLACK);
+	_canvas->draw_rectangle(0,_sim_height-1,_sim_width,1,BLACK);
+	_canvas->draw_rectangle(_sim_width-1,0,1,_sim_height,BLACK);
 
     for(Subject& s : _subjects)
     {
@@ -152,10 +171,13 @@ void Simulation::subject_collision(Subject& s1, Subject& s2)
 
     if(dist < s1.radius() + s2.radius())
     {
-        if(s1.infected() || s2.infected())
+        if(s1.infected() || s2.infected()) // check if one of the subjects is infected
         {
-            s1.infect();
-            s2.infect();
+            if (!s1.immune() && !s2.immune()) // check if both are not immune, if not then infect both
+            {
+                s1.infect();
+                s2.infect();
+            }
         }        
 
         double theta1 = s1.angle();
