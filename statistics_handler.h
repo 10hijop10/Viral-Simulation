@@ -27,7 +27,7 @@ class StatisticsHandler
 {
     public:
     virtual ~StatisticsHandler(){};
-    virtual void communicate_number_infected(int time, int infected) = 0;
+    virtual void communicate_numbers(int time, int infected,int immuun) = 0; //pure virtual
 };
 
 }

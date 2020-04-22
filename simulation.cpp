@@ -17,7 +17,6 @@
 #include "simulation.h"
 #include <iostream>
 #include <emscripten.h>
-#include <math.h>
 
 namespace corsim
 {
@@ -25,9 +24,15 @@ namespace corsim
 Simulation::Simulation(int width, int height, std::unique_ptr<Canvas> canvas, std::unique_ptr<StatisticsHandler> sh) : 
     _sim_width{width}, _sim_height{height}, _canvas{std::move(canvas)}, _sh{std::move(sh)} {}
 
+
 void Simulation::add_subject(Subject&& s)
 {
     this->_subjects.emplace_back(std::move(s));
+}
+
+std::vector<Subject>& Simulation::getSubjects()
+{
+    return _subjects;
 }
 
 void Simulation::run()
@@ -56,20 +61,13 @@ void Simulation::tick()
 
     std::vector<Subject*> collision_checker;
 
-      int numberInfected = 0;
-
     for(Subject& s : _subjects)
     {
         collision_checker.emplace_back(&s);
-        wall_collision(s);
+        wall_collision(s); 
 
-        s.set_x(s.x() + s.dx() * dt);
-        s.set_y(s.y() + s.dy() * dt);
-
-        if(s.infected())
-        {
-            numberInfected++;
-        }
+        s.set_x(s.x() + s.dx() * s.strategy_->subjectMovementSpeed());
+        s.set_y(s.y() + s.dy() * s.strategy_->subjectMovementSpeed()); 
     }
 
     for(int i = collision_checker.size()-1; i < collision_checker.size(); i--)
@@ -84,35 +82,53 @@ void Simulation::tick()
     }
 
     if(counter % 30 == 0)
-    {
-	    _sh->communicate_number_infected(counter/30,numberInfected);
-
+    {      
+        int numberInfected = 0;
+        int numberHealthy = 0;
+        int numberImmune = 0;
         for(Subject& s : _subjects)
         {
-            if(s.infected())
-            {
-                if (s.daysInfected() < 20){
-                    s.addDayInfected();
-                }
-                else
-                {
-                    s.heal();
-                }
-            }
-            if (s.immune()) {
-                if (s.daysImmune() < 10){
-                    s.addDayImmune();
-                }
-                else
-                {
-                    s.setImmune(false);
-                }
-            }
+            UpdateNumbers(s,numberInfected,numberImmune);
+            UpdateSubject(s);      
         }
-        
+
+	    _sh->communicate_numbers(counter/30,numberInfected,numberImmune);
     }
 
     draw_to_canvas();
+}
+
+void Simulation::UpdateNumbers(Subject& s,int& numberInfected,int&numberImmune)
+{
+    if(s.infected())
+    {
+        numberInfected++;
+    }
+    if (s.immune()){
+        numberImmune++;
+    }
+}
+
+void Simulation::UpdateSubject(Subject& s)
+{
+    if(s.infected()){
+        if (s.daysInfected() < 20){
+            s.addDayInfected();
+        }
+        else
+        {
+            s.heal();
+        }
+    }
+    if (s.immune()){
+        if (s.daysImmune() < 10){
+            s.addDayImmune();
+        }
+        else
+        {
+            s.setImmune(false);
+        }
+    }
 }
 
 void Simulation::draw_to_canvas()
@@ -125,11 +141,14 @@ void Simulation::draw_to_canvas()
 
     for(Subject& s : _subjects)
     {
-        CanvasColor c = BLUE;
+        CanvasColor c = BLUE; //if healthy
 
         if(s.infected())
         {
-            c = RED;
+            c = RED; // if infected
+        }
+        else if(s.immune()){
+            c = GREEN; // if immune
         }
 
         _canvas.get()->draw_ellipse(s.x(), s.y(), s.radius(), c);

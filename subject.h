@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once 
+#include "movementstrategy.h"
 
 namespace corsim
 {
@@ -36,17 +37,24 @@ class Subject
         int radius(); //Radius needed for collisions
         void set_dx(double dx);
         void set_dy(double dy);
+
         bool infected();
         void infect();
         int daysInfected();
         void addDayInfected();
+
         void heal();
+
         void setImmune(bool b);
         int daysImmune();
         void addDayImmune();
         bool immune();
+        
         double angle();
         double speed();
+
+        void set_strategy(movementStrategy *strategy);
+        movementStrategy *strategy_ = nullptr;
     private:
         double _x = 0,_y = 0, _dx = 0, _dy = 0;
         bool _infected = false;

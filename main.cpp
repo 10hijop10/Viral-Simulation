@@ -20,6 +20,11 @@
 #include <math.h>
 #include "html_canvas.h"
 #include "ChartJS_handler.h"
+#include "movementstrategy.h"
+#include "lockdownMovementStrategy.h"
+#include "regularMovementStrategy.h"
+#include <emscripten.h>
+#include <emscripten/bind.h>
 
 //Constants to control the simulation
 const int SUBJECT_COUNT = 200;
@@ -27,10 +32,10 @@ const int SIM_WIDTH = 800;
 const int SIM_HEIGHT = 500;
 const int SUBJECT_RADIUS = 2;
 
-int main() {
-    corsim::Simulation s(SIM_WIDTH,SIM_HEIGHT,std::make_unique<corsim::HTMLCanvas>(30,150,SIM_WIDTH,SIM_HEIGHT),
+static corsim::Simulation s(SIM_WIDTH,SIM_HEIGHT,std::make_unique<corsim::HTMLCanvas>(30,150,SIM_WIDTH,SIM_HEIGHT),
         std::make_unique<corsim::ChartJSHandler>());
 
+int main() {
     //Code to randomly generate certain numbers, which is done by using certain distributions
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -48,6 +53,7 @@ int main() {
 
         su.set_dx(dist_dx(mt));
         su.set_dy(dist_dy(mt));
+        su.set_strategy(new corsim::regularMovementStrategy); 
 
         if(i == SUBJECT_COUNT-1)
         {
@@ -58,4 +64,25 @@ int main() {
     }  
 
     s.run();
+}
+
+void regularMovement()
+{
+    for (corsim::Subject& subject : s.getSubjects())
+    {
+        subject.set_strategy(new corsim::regularMovementStrategy);   
+    }
+}
+
+void lockDownMovement(){
+    for (corsim::Subject& subject : s.getSubjects())
+    {
+        subject.set_strategy(new corsim::lockdownMovementStrategy);   
+    }
+}
+
+EMSCRIPTEN_BINDINGS(my_module) 
+{      
+    emscripten::function("regularMovement", &regularMovement);
+    emscripten::function("lockDownMovement", &lockDownMovement);
 }

@@ -21,6 +21,7 @@
 #include "subject.h"
 #include "canvas.h"
 #include "statistics_handler.h"
+#include "movementstrategy.h"
 
 namespace corsim
 {
@@ -36,19 +37,21 @@ class Simulation
         Simulation(int width, int height, std::unique_ptr<Canvas> canvas, std::unique_ptr<StatisticsHandler> sh);
         void add_subject(Subject&& s);
         void run(); //This method starts the simulation but locks execution because theading is not supported in WASM
+        std::vector<Subject>& getSubjects();
     private:
         void wall_collision(Subject& s);
         void subject_collision(Subject& s1, Subject& s2);
         void static_collision(Subject& s1, Subject& s2, bool emergency);
         void tick();
         void draw_to_canvas();
+        void UpdateNumbers(Subject& s,int& numberInfected,int&numberImmune);
+        void UpdateSubject(Subject& s);
 
         std::unique_ptr<Canvas> _canvas;
         std::vector<Subject> _subjects;
         std::unique_ptr<StatisticsHandler> _sh;
         bool running = false;
-        int tick_speed = 1000/30;
-        int _sim_width = 800, _sim_height = 500;
+        const int tick_speed = 1000/30;
+        const int _sim_width = 800, _sim_height = 500;
 };
-
 }

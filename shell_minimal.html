@@ -77,12 +77,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div style="position:absolute;top:150px;left:850px;width:650px;height:400px;">
       <canvas id="graph"></canvas>
     </div>
-    
+    <button onclick="buttonclick()">regular movement</button>
+    <button onclick="buttonclick2()">lockdown movement</button>
+
+    <script>
+      function buttonclick() {
+        Module.regularMovement();
+        }
+      function buttonclick2() {
+        Module.lockDownMovement();
+      }
+    </script>
+
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
       var spinnerElement = document.getElementById('spinner');
-
       var Module = {
         preRun: [],
         postRun: [],
@@ -154,20 +164,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           purple: 'rgb(153, 102, 255)',
           grey: 'rgb(201, 203, 207)'
         };
-		var config = {
+		var infectedConfig = {
 			type: 'line',
 			data: {
-				labels: ["Patient 0"],
+				labels: [],
 				datasets: [{
 					label: 'Aantal besmettingen',
 					backgroundColor: window.chartColors.red,
 					borderColor: window.chartColors.red,
 					data: [],
-					fill: false,
-				}]
-			},
+          fill: false,
+          offset: true,
+				},{
+          label: 'Aantal immuun',
+					backgroundColor: window.chartColors.green,
+					borderColor: window.chartColors.green,
+					data: [],
+          fill: false,
+          offset: true,
+        }]
+      },
 			options: {
-				responsive: true,
+        responsive: true,
 				title: {
 					display: true,
 					text: 'Aantal besmettingen'
@@ -197,11 +215,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					}]
 				}
 			}
-		};
+    };
 
 			var ctx = document.getElementById('graph').getContext('2d');
-			window.myLine = new Chart(ctx, config);
-      window.myConfig = config;
+			window.myLine = new Chart(ctx, infectedConfig);
+      window.myConfig = infectedConfig;
 
       });
     </script>

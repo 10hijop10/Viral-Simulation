@@ -16,6 +16,7 @@
 
 #include "subject.h"
 #include <math.h>
+#include "movementstrategy.h"
 
 namespace corsim
 {
@@ -123,5 +124,9 @@ double Subject::speed()
     return sqrt(_dx * _dx + _dy * _dy);
 }
 
-
+void Subject::set_strategy(movementStrategy *strategy)
+{
+    delete this->strategy_;
+    this->strategy_ = strategy;
+}
 }
