@@ -53,5 +53,8 @@ class Simulation
         bool running = false;
         const int tick_speed = 1000/30;
         const int _sim_width = 800, _sim_height = 500;
+
+        const int daysImmune = 40;
+        const int daysInfected = 20;
 };
 }

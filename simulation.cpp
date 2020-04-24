@@ -103,6 +103,7 @@ void Simulation::UpdateNumbers(Subject& s,int& numberInfected,int&numberImmune)
     if(s.infected())
     {
         numberInfected++;
+        return;
     }
     if (s.immune()){
         numberImmune++;
@@ -112,17 +113,20 @@ void Simulation::UpdateNumbers(Subject& s,int& numberInfected,int&numberImmune)
 void Simulation::UpdateSubject(Subject& s)
 {
     if(s.infected()){
-        if (s.daysInfected() < 20){
+        if (s.daysInfected() < daysInfected){
             s.addDayInfected();
+            return;
         }
         else
         {
             s.heal();
+            return;
         }
     }
     if (s.immune()){
-        if (s.daysImmune() < 10){
+        if (s.daysImmune() < daysImmune){
             s.addDayImmune();
+            return;
         }
         else
         {
@@ -160,19 +164,24 @@ void Simulation::wall_collision(Subject& s)
     if (s.x() - s.radius() + s.dx() < 0 ||
         s.x() + s.radius() + s.dx() > _sim_width) {
         s.set_dx(s.dx() * -1);
+        return;
     }
     if (s.y() - s.radius() + s.dy() < 0 ||
         s.y() + s.radius() + s.dy() > _sim_height) {
         s.set_dy(s.dy() * -1);
+        return;
     }
     if (s.y() + s.radius() > _sim_height) {
         s.set_y(_sim_height - s.radius());
+        return;
     }
     if (s.y() - s.radius() < 0) {
         s.set_y(s.radius());
+        return;
     }
     if (s.x() + s.radius() > _sim_width) {
         s.set_x(_sim_width - s.radius());
+        return;
     }
     if (s.x() - s.radius() < 0) {
         s.set_x(s.radius());
@@ -186,6 +195,9 @@ double distance(Subject& s1, Subject& s2)
 
 void Simulation::subject_collision(Subject& s1, Subject& s2)
 {
+    if (s1.immune()) return;
+    if (s2.immune()) return;
+    if (s1.infected() && s2.infected()) return;
     double dist = distance(s1, s2);
 
     if(dist < s1.radius() + s2.radius())

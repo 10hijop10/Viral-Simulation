@@ -68,16 +68,20 @@ int main() {
 
 void regularMovement()
 {
-    for (corsim::Subject& subject : s.getSubjects())
+    std::vector<corsim::Subject>& subjects = s.getSubjects();
+    for (corsim::Subject& subject : subjects)
     {
         subject.set_strategy(new corsim::regularMovementStrategy);   
     }
 }
 
-void lockDownMovement(){
-    for (corsim::Subject& subject : s.getSubjects())
+void lockDownMovement()
+{
+    std::vector<corsim::Subject>& subjects = s.getSubjects();
+    double size = subjects.size() * 0.75;
+    for (int i = 0; i < size; i++)
     {
-        subject.set_strategy(new corsim::lockdownMovementStrategy);   
+        subjects.at(i).set_strategy(new corsim::lockdownMovementStrategy);   
     }
 }
 
