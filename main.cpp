@@ -53,7 +53,7 @@ int main() {
 
         su.set_dx(dist_dx(mt));
         su.set_dy(dist_dy(mt));
-        su.set_strategy(new corsim::regularMovementStrategy); 
+        su.set_strategy(std::make_shared<corsim::regularMovementStrategy>()); 
 
         if(i == SUBJECT_COUNT-1)
         {
@@ -69,19 +69,21 @@ int main() {
 void regularMovement()
 {
     std::vector<corsim::Subject>& subjects = s.getSubjects();
+    std::shared_ptr<corsim::regularMovementStrategy> movementStrat = std::make_shared<corsim::regularMovementStrategy>();
     for (corsim::Subject& subject : subjects)
     {
-        subject.set_strategy(new corsim::regularMovementStrategy);   
+        subject.set_strategy(movementStrat);   
     }
 }
 
 void lockDownMovement()
 {
     std::vector<corsim::Subject>& subjects = s.getSubjects();
+    std::shared_ptr<corsim::lockdownMovementStrategy> movementStrat = std::make_shared<corsim::lockdownMovementStrategy>();
     double size = subjects.size() * 0.75;
     for (int i = 0; i < size; i++)
     {
-        subjects.at(i).set_strategy(new corsim::lockdownMovementStrategy);   
+        subjects.at(i).set_strategy(movementStrat);   
     }
 }
 

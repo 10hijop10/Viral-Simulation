@@ -124,9 +124,8 @@ double Subject::speed()
     return sqrt(_dx * _dx + _dy * _dy);
 }
 
-void Subject::set_strategy(movementStrategy *strategy)
+void Subject::set_strategy(std::shared_ptr<movementStrategy> strategy)
 {
-    delete this->strategy_;
     this->strategy_ = strategy;
 }
 }

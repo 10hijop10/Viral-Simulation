@@ -98,7 +98,7 @@ void Simulation::tick()
     draw_to_canvas();
 }
 
-void Simulation::UpdateNumbers(Subject& s,int& numberInfected,int&numberImmune)
+void Simulation::UpdateNumbers(Subject& s,int& numberInfected,int& numberImmune)
 {
     if(s.infected())
     {

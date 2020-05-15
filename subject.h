@@ -16,6 +16,7 @@
 
 #pragma once 
 #include "movementstrategy.h"
+#include <memory>
 
 namespace corsim
 {
@@ -53,8 +54,8 @@ class Subject
         double angle();
         double speed();
 
-        void set_strategy(movementStrategy *strategy);
-        movementStrategy *strategy_ = nullptr;
+        void set_strategy(std::shared_ptr<movementStrategy> strategy);
+        std::shared_ptr<movementStrategy> strategy_;
     private:
         double _x = 0,_y = 0, _dx = 0, _dy = 0;
         bool _infected = false;
