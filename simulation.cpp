@@ -195,9 +195,6 @@ double distance(Subject& s1, Subject& s2)
 
 void Simulation::subject_collision(Subject& s1, Subject& s2)
 {
-    if (s1.immune()) return;
-    if (s2.immune()) return;
-    if (s1.infected() && s2.infected()) return;
     double dist = distance(s1, s2);
 
     if(dist < s1.radius() + s2.radius())

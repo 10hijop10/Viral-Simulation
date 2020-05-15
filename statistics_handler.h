@@ -26,8 +26,8 @@ namespace corsim
 class StatisticsHandler
 {
     public:
-    virtual ~StatisticsHandler(){};
-    virtual void communicate_numbers(int time, int infected,int immuun) = 0; //pure virtual
+    virtual ~StatisticsHandler() = default;
+    virtual void communicate_numbers(int time, int infected,int immune) = 0; //pure virtual
 };
 
 }

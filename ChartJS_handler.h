@@ -29,7 +29,7 @@ class ChartJSHandler : public StatisticsHandler
 {
     public:
     ~ChartJSHandler() override;
-    void communicate_numbers(int time, int infected,int immuun) override;
+    void communicate_numbers(int time, int infected,int immune) override;
 };
 
 }

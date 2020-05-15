@@ -15,8 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "subject.h"
-#include <math.h>
-#include "movementstrategy.h"
+#include <cmath>
+
+#include <utility>
+#include "movementStrategy.h"
 
 namespace corsim
 {
@@ -119,13 +121,13 @@ double Subject::angle()
     return atan2(_dy,_dx);
 }
 
-double Subject::speed()
+double Subject::speed() 
 {
     return sqrt(_dx * _dx + _dy * _dy);
 }
 
 void Subject::set_strategy(std::shared_ptr<movementStrategy> strategy)
 {
-    this->strategy_ = strategy;
+    this->strategy_ = std::move(strategy);
 }
 }

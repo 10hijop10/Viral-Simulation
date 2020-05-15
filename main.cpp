@@ -15,12 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "simulation.h"
-#include <iostream>
 #include <random>
-#include <math.h>
 #include "html_canvas.h"
 #include "ChartJS_handler.h"
-#include "movementstrategy.h"
 #include "lockdownMovementStrategy.h"
 #include "regularMovementStrategy.h"
 #include <emscripten.h>
